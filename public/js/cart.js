@@ -13,7 +13,7 @@ function renderCart() {
     const checkoutSection = document.getElementById('checkout-section');
 
     if (cart.length === 0) {
-        cartContainer.innerHTML = '<p class="text-center">Your cart is empty. <a href="/">Go shopping</a></p>';
+        cartContainer.innerHTML = '<p class="text-center">Количката е празна. <a href="/">Към пазаруване</a></p>';
         if (checkoutSection) checkoutSection.style.display = 'none';
         return;
     }
@@ -34,11 +34,11 @@ function renderCart() {
                         </div>
                     </div>
                 </td>
-                <td>$${Number(item.price).toFixed(2)}</td>
+                <td>${Number(item.price).toFixed(2)} лв.</td>
                 <td>
                     <input type="number" min="1" value="${item.qty}" onchange="updateQty(${item.id}, this.value)" class="qty-input" style="width: 60px">
                 </td>
-                <td>$${itemTotal.toFixed(2)}</td>
+                <td>${itemTotal.toFixed(2)} лв.</td>
                 <td>
                     <button onclick="removeFromCart(${item.id})" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">&times;</button>
                 </td>
@@ -50,10 +50,10 @@ function renderCart() {
         <table class="cart-table">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
+                    <th>Продукт</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Общо</th>
                     <th></th>
                 </tr>
             </thead>
@@ -62,7 +62,7 @@ function renderCart() {
             </tbody>
         </table>
         <div class="cart-summary">
-            <div class="cart-total">Total: $${total.toFixed(2)}</div>
+            <div class="cart-total">Общо: ${total.toFixed(2)} лв.</div>
         </div>
     `;
 }
@@ -78,7 +78,7 @@ function updateQty(id, newQty) {
         }
         localStorage.setItem('minishop_cart', JSON.stringify(cart));
         renderCart();
-        updateCartCount(); // From app.js
+        updateCartCount(); // от app.js
     }
 }
 
@@ -87,7 +87,7 @@ function removeFromCart(id) {
     cart = cart.filter(i => i.id !== id);
     localStorage.setItem('minishop_cart', JSON.stringify(cart));
     renderCart();
-    updateCartCount(); // From app.js
+    updateCartCount(); // от app.js
 }
 
 async function handleCheckout(e) {
@@ -95,7 +95,7 @@ async function handleCheckout(e) {
 
     const cart = JSON.parse(localStorage.getItem('minishop_cart')) || [];
     if (cart.length === 0) {
-        alert('Your cart is empty');
+        alert('Количката е празна');
         return;
     }
 
@@ -104,7 +104,7 @@ async function handleCheckout(e) {
 
     const btn = e.target.querySelector('button[type="submit"]');
     const originalText = btn.innerText;
-    btn.innerText = 'Processing...';
+    btn.innerText = 'Обработва се...';
     btn.disabled = true;
 
     try {
@@ -124,25 +124,25 @@ async function handleCheckout(e) {
             updateCartCount();
             document.querySelector('main').innerHTML = `
                 <div class="container text-center" style="padding: 4rem 0;">
-                    <h2 style="color: #27ae60; margin-bottom: 1rem;">Order Placed Successfully!</h2>
-                    <p>Thank you for your order. Your order code is <strong>${result.code}</strong>.</p>
-                    <p class="mt-1">We have sent a confirmation email to ${customer.email}.</p>
-                    <a href="/" class="btn btn-primary mt-2">Continue Shopping</a>
+                    <h2 style="color: #27ae60; margin-bottom: 1rem;">Поръчката е успешно направена!</h2>
+                    <p>Благодарим Ви за поръчката. Вашият код за поръчка е <strong>${result.code}</strong>.</p>
+                    <p class="mt-1">Изпратихме имейл с потвърждение на ${customer.email}.</p>
+                    <a href="/" class="btn btn-primary mt-2">Продължи пазаруването</a>
                 </div>
             `;
         } else {
-            alert('Order failed: ' + (result.error || 'Unknown error'));
+            alert('Грешка при поръчката: ' + (result.error || 'Неизвестна грешка'));
             btn.innerText = originalText;
             btn.disabled = false;
         }
     } catch (error) {
         console.error(error);
-        alert('Network error. Please try again.');
+        alert('Мрежова грешка. Опитайте отново.');
         btn.innerText = originalText;
         btn.disabled = false;
     }
 }
 
-// Expose to window
+// Глобална експозиция
 window.updateQty = updateQty;
 window.removeFromCart = removeFromCart;

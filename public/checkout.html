@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout | MiniShop</title>
+    <title>Поръчка | Врати</title>
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -13,10 +13,10 @@
     <header>
         <div class="container">
             <nav>
-                <a href="/" class="logo">MiniShop.</a>
+                <a href="/" class="logo">Врати.</a>
                 <div class="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/track.html">Track Order</a>
+                    <a href="/">Начало</a>
+                    <a href="/track.html">Проследяване</a>
                     <a href="/cart.html" class="cart-icon">
                         🛒
                         <span class="cart-count" id="cart-count">0</span>
@@ -27,49 +27,57 @@
     </header>
 
     <main class="container">
-        <h2 class="section-title">Checkout</h2>
+        <h2 class="section-title">Финализиране на поръчката</h2>
+
         <div class="checkout-form">
             <form id="checkout-form">
+
                 <div class="form-group">
-                    <label for="name">Full Name</label>
+                    <label for="name">Пълно име</label>
                     <input type="text" id="name" name="name" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="email">Email Address</label>
+                    <label for="email">Имейл адрес</label>
                     <input type="email" id="email" name="email" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="phone">Phone Number</label>
+                    <label for="phone">Телефонен номер</label>
                     <input type="tel" id="phone" name="phone" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label for="address">Shipping Address</label>
+                    <label for="address">Адрес за доставка</label>
                     <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
                 </div>
 
                 <div class="cart-summary mb-2">
-                    <h3>Order Summary</h3>
+                    <h3>Обобщение на поръчката</h3>
                     <div id="checkout-items"></div>
-                    <div class="cart-total mt-1">Total: <span id="checkout-total">$0.00</span></div>
+                    <div class="cart-total mt-1">Общо: <span id="checkout-total">0.00 лв.</span></div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+                <button type="submit" class="btn btn-primary btn-block">Завърши поръчката</button>
+
             </form>
         </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 MiniShop Inc. All rights reserved.</p>
+            <p>&copy; 2024 Врати Inc. Всички права запазени.</p>
         </div>
     </footer>
 
     <script src="/js/app.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cart = JSON.parse(localStorage.getItem('minishop_cart')) || [];
+
             if (cart.length === 0) {
-                alert('Your cart is empty!');
+                alert('Количката е празна!');
                 window.location.href = '/';
                 return;
             }
@@ -79,14 +87,16 @@
             let total = 0;
 
             itemsContainer.innerHTML = cart.map(item => {
-                total += item.price * item.qty;
-                return `<div>${item.title} x ${item.qty} - $${(item.price * item.qty).toFixed(2)}</div>`;
+                const subtotal = item.price * item.qty;
+                total += subtotal;
+                return `<div>${item.title} x ${item.qty} — ${(subtotal).toFixed(2)} лв.</div>`;
             }).join('');
 
-            totalEl.innerText = '$' + total.toFixed(2);
+            totalEl.innerText = total.toFixed(2) + ' лв.';
 
             document.getElementById('checkout-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+
                 const formData = new FormData(e.target);
                 const customer = {
                     name: formData.get('name'),
@@ -101,22 +111,29 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ items: cart, customer })
                     });
+
                     const data = await res.json();
 
                     if (data.ok) {
                         localStorage.removeItem('minishop_cart');
-                        alert('Order placed successfully! Code: ' + data.code);
-                        window.location.href = '/track.html?code=' + data.code + '&email=' + customer.email;
+
+                        alert('Поръчката е успешно направена! Код: ' + data.code);
+
+                        window.location.href =
+                            '/track.html?code=' + data.code + '&email=' + encodeURIComponent(customer.email);
+
                     } else {
-                        alert('Error: ' + data.error);
+                        alert('Грешка: ' + data.error);
                     }
+
                 } catch (error) {
                     console.error(error);
-                    alert('Failed to place order.');
+                    alert('Неуспешно изпращане на поръчката.');
                 }
             });
         });
     </script>
+
 </body>
 
 </html>

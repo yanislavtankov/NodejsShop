@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel | MiniShop</title>
+    <title>Админ панел | Врати</title>
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -140,51 +140,60 @@
 
 <body>
 
+    <!-- LOGIN OVERLAY -->
     <div id="login-overlay" class="login-overlay">
         <div class="login-box">
-            <h2 class="text-center mb-2">Admin Login</h2>
+            <h2 class="text-center mb-2">Админ вход</h2>
+
             <form id="login-form">
                 <div class="form-group">
-                    <label>Username</label>
+                    <label>Потребителско име</label>
                     <input type="text" name="username" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label>Password</label>
+                    <label>Парола</label>
                     <input type="password" name="password" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+                <button type="submit" class="btn btn-primary btn-block">Вход</button>
             </form>
         </div>
     </div>
 
+    <!-- ADMIN APP -->
     <div id="admin-app" style="display: none;">
         <div class="admin-container">
+
             <div class="admin-header">
-                <h2>MiniShop Admin</h2>
+                <h2>Врати — Админ панел</h2>
+
                 <div class="admin-nav">
-                    <button onclick="showTab('products')" id="tab-products" class="active">Products</button>
-                    <button onclick="showTab('categories')" id="tab-categories">Categories</button>
-                    <button onclick="showTab('orders')" id="tab-orders">Orders</button>
-                    <button onclick="logout()" style="color: #e74c3c;">Logout</button>
+                    <button onclick="showTab('products')" id="tab-products" class="active">Продукти</button>
+                    <button onclick="showTab('categories')" id="tab-categories">Категории</button>
+                    <button onclick="showTab('orders')" id="tab-orders">Поръчки</button>
+                    <button onclick="logout()" style="color: #e74c3c;">Изход</button>
                 </div>
             </div>
 
+            <!-- PRODUCTS -->
             <div id="view-products">
                 <div class="dashboard-card">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <h3>Products</h3>
-                        <button onclick="openProductModal()" class="btn btn-primary btn-sm">Add Product</button>
+                        <h3>Продукти</h3>
+                        <button onclick="openProductModal()" class="btn btn-primary btn-sm">Добави продукт</button>
                     </div>
+
                     <div style="overflow-x: auto;">
                         <table id="products-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Image</th>
-                                    <th>Title</th>
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Actions</th>
+                                    <th>Изображение</th>
+                                    <th>Заглавие</th>
+                                    <th>Цена</th>
+                                    <th>Наличност</th>
+                                    <th>Действия</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -193,17 +202,19 @@
                 </div>
             </div>
 
+            <!-- CATEGORIES -->
             <div id="view-categories" style="display: none;">
                 <div class="dashboard-card">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
-                        <h3>Categories</h3>
-                        <button onclick="openCategoryModal()" class="btn btn-primary btn-sm">Add Category</button>
+                        <h3>Категории</h3>
+                        <button onclick="openCategoryModal()" class="btn btn-primary btn-sm">Добави категория</button>
                     </div>
+
                     <table id="categories-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Name</th>
+                                <th>Име</th>
                                 <th>Slug</th>
                                 <th>Parent ID</th>
                             </tr>
@@ -213,108 +224,128 @@
                 </div>
             </div>
 
+            <!-- ORDERS -->
             <div id="view-orders" style="display: none;">
                 <div class="dashboard-card">
-                    <h3>Orders</h3>
+                    <h3>Поръчки</h3>
+
                     <table id="orders-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Code</th>
-                                <th>Customer</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                                <th>Actions</th>
+                                <th>Код</th>
+                                <th>Клиент</th>
+                                <th>Общо</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                                <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
                     </table>
+
                 </div>
             </div>
+
         </div>
     </div>
 
-    <!-- Product Modal -->
+    <!-- PRODUCT MODAL -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
-            <h3 id="product-modal-title">Add Product</h3>
+            <h3 id="product-modal-title">Добави продукт</h3>
+
             <form id="product-form">
                 <input type="hidden" name="id" id="prod-id">
+
                 <div class="form-group">
-                    <label>Title</label>
+                    <label>Заглавие</label>
                     <input type="text" name="title" id="prod-title" class="form-control" required>
                 </div>
+
                 <div class="form-group">
                     <label>Slug</label>
                     <input type="text" name="slug" id="prod-slug" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label>Description</label>
+                    <label>Описание</label>
                     <textarea name="description" id="prod-desc" class="form-control" rows="3"></textarea>
                 </div>
+
                 <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                     <div>
-                        <label>Price</label>
+                        <label>Цена</label>
                         <input type="number" name="price" id="prod-price" class="form-control" step="0.01" required>
                     </div>
                     <div>
-                        <label>Stock</label>
+                        <label>Наличност</label>
                         <input type="number" name="stock" id="prod-stock" class="form-control" required>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label>Category</label>
+                    <label>Категория</label>
                     <select name="category_id" id="prod-category" class="form-control" required></select>
                 </div>
+
                 <div class="form-group">
-                    <label>Product Image</label>
+                    <label>Изображение на продукта</label>
                     <input type="file" id="prod-image-file" accept="image/*" class="form-control"
                         style="margin-bottom: 0.5rem;">
+
                     <input type="hidden" name="image_url" id="prod-image">
+
                     <div id="image-preview" style="margin-top: 0.5rem; display: none;">
                         <img id="preview-img" src="" alt="Preview"
                             style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;">
                     </div>
-                    <small style="color: #666;">Max size: 5MB. Formats: JPG, PNG, GIF, WebP</small>
+
+                    <small style="color: #666;">Максимален размер: 5MB. Формати: JPG, PNG, GIF, WebP</small>
                 </div>
+
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" name="is_featured" id="prod-featured"> Featured Product
+                        <input type="checkbox" name="is_featured" id="prod-featured"> Продукт на фокус
                     </label>
                 </div>
+
                 <div style="display: flex; gap: 1rem; justify-content: flex-end;">
-                    <button type="button" onclick="closeModal('product-modal')"
-                        class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" onclick="closeModal('product-modal')" class="btn btn-secondary">Отказ</button>
+                    <button type="submit" class="btn btn-primary">Запази</button>
                 </div>
+
             </form>
         </div>
     </div>
 
-    <!-- Category Modal -->
+    <!-- CATEGORY MODAL -->
     <div id="category-modal" class="modal">
         <div class="modal-content">
-            <h3>Add Category</h3>
+            <h3>Добави категория</h3>
+
             <form id="category-form">
                 <div class="form-group">
-                    <label>Name</label>
+                    <label>Име</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
+
                 <div class="form-group">
                     <label>Slug</label>
                     <input type="text" name="slug" class="form-control" required>
                 </div>
+
                 <div class="form-group">
-                    <label>Parent Category (Optional)</label>
+                    <label>Родителска категория (по избор)</label>
                     <select name="parent_id" id="cat-parent" class="form-control">
-                        <option value="">None</option>
+                        <option value="">Няма</option>
                     </select>
                 </div>
+
                 <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                     <button type="button" onclick="closeModal('category-modal')"
-                        class="btn btn-secondary">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                        class="btn btn-secondary">Отказ</button>
+                    <button type="submit" class="btn btn-primary">Запази</button>
                 </div>
             </form>
         </div>

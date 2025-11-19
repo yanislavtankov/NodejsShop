@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bg">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details | MiniShop</title>
+    <title>Детайли за продукта | Врати</title>
     <link rel="stylesheet" href="/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -13,10 +13,10 @@
     <header>
         <div class="container">
             <nav>
-                <a href="/" class="logo">MiniShop.</a>
+                <a href="/" class="logo">Врати.</a>
                 <div class="nav-links">
-                    <a href="/">Home</a>
-                    <a href="/track.html">Track Order</a>
+                    <a href="/">Начало</a>
+                    <a href="/track.html">Проследяване</a>
                     <a href="/cart.html" class="cart-icon">
                         🛒
                         <span class="cart-count" id="cart-count">0</span>
@@ -28,22 +28,24 @@
 
     <main class="container">
         <div id="product-details" class="product-details-container">
-            <div class="loading">Loading product details...</div>
+            <div class="loading">Зареждане на информация за продукта...</div>
         </div>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2024 MiniShop Inc. All rights reserved.</p>
+            <p>&copy; 2024 Врати Inc. Всички права запазени.</p>
         </div>
     </footer>
 
     <script src="/js/app.js"></script>
+
     <script>
-        // Simple inline script to init product details, logic will be in app.js mostly
+        // Инициализиране на детайли за продукта — основната логика е в app.js
         document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const slug = params.get('slug');
+
             if (slug) {
                 loadProductDetails(slug);
             } else {

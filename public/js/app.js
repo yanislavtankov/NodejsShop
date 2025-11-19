@@ -1,10 +1,10 @@
-// State
+// Състояние
 const state = {
     products: [],
     cart: JSON.parse(localStorage.getItem('minishop_cart')) || []
 };
 
-// DOM Elements
+// DOM елементи
 const cartCountEl = document.getElementById('cart-count');
 const productsContainer = document.getElementById('products-container');
 const productDetailsContainer = document.getElementById('product-details');
@@ -12,19 +12,19 @@ const headerSearchBtn = document.getElementById('header-search-btn');
 const headerSearchInput = document.getElementById('header-search-input');
 const headerCategorySelect = document.getElementById('header-category-select');
 
-// Init
+// Инициализация
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     fetchCategories();
     setupSearchListeners();
 
-    // Home page specific
+    // Специфично за началната страница
     if (productsContainer && window.location.pathname === '/') {
         fetchProducts({ featured: true });
     }
 });
 
-// Setup Search Listeners
+// Настройване на слушатели за търсене
 function setupSearchListeners() {
     if (headerSearchBtn) {
         headerSearchBtn.addEventListener('click', handleSearch);
@@ -35,10 +35,9 @@ function setupSearchListeners() {
         });
     }
 
-    // Setup header reset button
     const headerResetBtn = document.getElementById('header-reset-btn');
 
-    // Function to toggle header reset button visibility
+    // Показване или скриване на бутона за нулиране
     function toggleHeaderResetButton() {
         if (headerResetBtn && headerSearchInput && headerCategorySelect) {
             const hasSearchValue = headerSearchInput.value.trim() !== '';
@@ -47,7 +46,6 @@ function setupSearchListeners() {
         }
     }
 
-    // Add input listeners
     if (headerSearchInput) {
         headerSearchInput.addEventListener('input', toggleHeaderResetButton);
     }
@@ -55,17 +53,13 @@ function setupSearchListeners() {
         headerCategorySelect.addEventListener('change', toggleHeaderResetButton);
     }
 
-    // Handle reset button click
     if (headerResetBtn) {
         headerResetBtn.addEventListener('click', () => {
-            // Clear search and category
             if (headerSearchInput) headerSearchInput.value = '';
             if (headerCategorySelect) headerCategorySelect.value = '';
 
-            // Hide the reset button
             headerResetBtn.style.display = 'none';
 
-            // If on search page, reload without search/category filters
             if (window.location.pathname === '/search.html') {
                 const newParams = new URLSearchParams(window.location.search);
                 newParams.delete('q');
@@ -76,8 +70,7 @@ function setupSearchListeners() {
         });
     }
 
-    // Initial toggle
-    setTimeout(toggleHeaderResetButton, 100); // Delay to ensure categories are loaded
+    setTimeout(toggleHeaderResetButton, 100);
 }
 
 function handleSearch() {
@@ -91,7 +84,7 @@ function handleSearch() {
     window.location.href = `/search.html?${params.toString()}`;
 }
 
-// Fetch Categories
+// Зареждане на категории
 async function fetchCategories() {
     try {
         const res = await fetch('/api/categories');
@@ -99,57 +92,57 @@ async function fetchCategories() {
         const categories = await res.json();
 
         if (headerCategorySelect) {
-            const currentVal = headerCategorySelect.value; // Preserve if set (e.g. by initSearchPage)
-            headerCategorySelect.innerHTML = '<option value="">All Categories</option>' +
+            const currentVal = headerCategorySelect.value;
+            headerCategorySelect.innerHTML = '<option value="">Всички категории</option>' +
                 categories.map(c => `<option value="${c.slug}">${c.name}</option>`).join('');
             if (currentVal) headerCategorySelect.value = currentVal;
         }
     } catch (error) {
-        console.error('Failed to fetch categories', error);
+        console.error('Грешка при зареждане на категории', error);
     }
 }
 
-// Fetch Products (General)
+// Зареждане на продукти
 async function fetchProducts(params = {}) {
     try {
         const queryString = new URLSearchParams(params).toString();
         const res = await fetch(`/api/products?${queryString}`);
-        if (!res.ok) throw new Error('Failed to fetch products');
+        if (!res.ok) throw new Error('Грешка при зареждане на продукти');
         state.products = await res.json();
         renderProducts(state.products);
     } catch (error) {
         console.error(error);
         if (productsContainer) {
-            productsContainer.innerHTML = '<p class="text-center">Failed to load products.</p>';
+            productsContainer.innerHTML = '<p class="text-center">Грешка при зареждане на продуктите.</p>';
         }
     }
 }
 
-// Render Products Grid
+// Рендиране на списък с продукти
 function renderProducts(products) {
     if (!productsContainer) return;
 
     if (products.length === 0) {
-        productsContainer.innerHTML = '<p class="text-center">No products found.</p>';
+        productsContainer.innerHTML = '<p class="text-center">Няма намерени продукти.</p>';
         return;
     }
 
     productsContainer.innerHTML = products.map(product => `
         <div class="product-card">
             <a href="/product.html?slug=${product.slug}" class="product-image-container">
-                <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/400x300?text=No+Image'}" alt="${product.title}" class="product-image">
+                <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/400x300?text=Без+снимка'}" alt="${product.title}" class="product-image">
             </a>
             <div class="product-info">
-                <div class="product-category">${product.category_name || 'General'}</div>
+                <div class="product-category">${product.category_name || 'Общи'}</div>
                 <h3 class="product-title"><a href="/product.html?slug=${product.slug}">${product.title}</a></h3>
-                <div class="product-price">$${Number(product.price).toFixed(2)}</div>
-                <button onclick="addToCart(${product.id})" class="btn btn-primary btn-block">Add to Cart</button>
+                <div class="product-price">${Number(product.price).toFixed(2)} лв.</div>
+                <button onclick="addToCart(${product.id})" class="btn btn-primary btn-block">Добави в количката</button>
             </div>
         </div>
     `).join('');
 }
 
-// Search Page Logic
+// Логика на страницата за търсене
 async function initSearchPage() {
     const urlParams = new URLSearchParams(window.location.search);
     const q = urlParams.get('q') || '';
@@ -157,10 +150,8 @@ async function initSearchPage() {
     const minPrice = urlParams.get('min_price') || '';
     const maxPrice = urlParams.get('max_price') || '';
 
-    // Pre-fill search input
     if (headerSearchInput) headerSearchInput.value = q;
 
-    // Wait for categories to load first, then set the category value
     await fetchCategories();
     if (headerCategorySelect && category) {
         headerCategorySelect.value = category;
@@ -171,15 +162,13 @@ async function initSearchPage() {
     if (minPriceInput) minPriceInput.value = minPrice;
     if (maxPriceInput) maxPriceInput.value = maxPrice;
 
-    // Update Title
     const searchTitle = document.getElementById('search-title');
     if (searchTitle) {
-        if (q) searchTitle.innerText = `Search Results for "${q}"`;
-        else if (category) searchTitle.innerText = `Category: ${category}`;
-        else searchTitle.innerText = 'All Products';
+        if (q) searchTitle.innerText = `Резултати за търсене: "${q}"`;
+        else if (category) searchTitle.innerText = `Категория: ${category}`;
+        else searchTitle.innerText = 'Всички продукти';
     }
 
-    // Fetch
     const fetchParams = {};
     if (q) fetchParams.q = q;
     if (category) fetchParams.category = category;
@@ -188,7 +177,6 @@ async function initSearchPage() {
 
     await fetchProducts(fetchParams);
 
-    // Handle Filter Form
     const filterForm = document.getElementById('filter-form');
     if (filterForm) {
         filterForm.addEventListener('submit', (e) => {
@@ -206,10 +194,8 @@ async function initSearchPage() {
         });
     }
 
-    // Handle Reset Price Button
     const resetPriceBtn = document.getElementById('reset-price-btn');
 
-    // Function to toggle reset button visibility
     function toggleResetButton() {
         if (resetPriceBtn && minPriceInput && maxPriceInput) {
             const hasMinValue = minPriceInput.value.trim() !== '';
@@ -218,25 +204,16 @@ async function initSearchPage() {
         }
     }
 
-    // Add input listeners to price fields
-    if (minPriceInput) {
-        minPriceInput.addEventListener('input', toggleResetButton);
-    }
-    if (maxPriceInput) {
-        maxPriceInput.addEventListener('input', toggleResetButton);
-    }
+    if (minPriceInput) minPriceInput.addEventListener('input', toggleResetButton);
+    if (maxPriceInput) maxPriceInput.addEventListener('input', toggleResetButton);
 
-    // Handle reset button click
     if (resetPriceBtn) {
         resetPriceBtn.addEventListener('click', () => {
-            // Clear price inputs
             if (minPriceInput) minPriceInput.value = '';
             if (maxPriceInput) maxPriceInput.value = '';
 
-            // Hide the reset button
             resetPriceBtn.style.display = 'none';
 
-            // Remove price filters from URL and reload
             const newParams = new URLSearchParams(window.location.search);
             newParams.delete('min_price');
             newParams.delete('max_price');
@@ -245,10 +222,8 @@ async function initSearchPage() {
         });
     }
 
-    // Initial toggle on page load
     toggleResetButton();
 
-    // Trigger header reset button visibility check after setting values
     setTimeout(() => {
         const headerResetBtn = document.getElementById('header-reset-btn');
         if (headerResetBtn && headerSearchInput && headerCategorySelect) {
@@ -259,47 +234,47 @@ async function initSearchPage() {
     }, 150);
 }
 
-// Load Product Details
+// Зареждане на продукт по slug
 async function loadProductDetails(slug) {
     try {
         const res = await fetch(`/api/products/${slug}`);
-        if (!res.ok) throw new Error('Product not found');
+        if (!res.ok) throw new Error('Продуктът не е намерен');
         const product = await res.json();
-        window.currentProduct = product; // Store for cart
+        window.currentProduct = product;
         renderProductDetails(product);
     } catch (error) {
         console.error(error);
         if (productDetailsContainer) {
-            productDetailsContainer.innerHTML = '<p class="text-center">Product not found.</p>';
+            productDetailsContainer.innerHTML = '<p class="text-center">Продуктът не е намерен.</p>';
         }
     }
 }
 
-// Render Single Product
+// Рендиране на детайли за продукт
 function renderProductDetails(product) {
     if (!productDetailsContainer) return;
     productDetailsContainer.innerHTML = `
         <div class="product-gallery">
-            <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/600x400?text=No+Image'}" alt="${product.title}">
+            <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/600x400?text=Без+снимка'}" alt="${product.title}">
         </div>
         <div class="product-meta">
             <h1>${product.title}</h1>
-            <div class="price">$${Number(product.price).toFixed(2)}</div>
-            <p class="description">${product.description || 'No description available.'}</p>
+            <div class="price">${Number(product.price).toFixed(2)} лв.</div>
+            <p class="description">${product.description || 'Няма налично описание.'}</p>
             
             <div class="actions">
                 <input type="number" id="qty-${product.id}" value="1" min="1" class="qty-input">
-                <button onclick="addToCart(${product.id}, true)" class="btn btn-primary">Add to Cart</button>
+                <button onclick="addToCart(${product.id}, true)" class="btn btn-primary">Добави в количката</button>
             </div>
             
             <div class="mt-2">
-                <small>Stock: ${product.stock} units available</small>
+                <small>Наличност: ${product.stock} бр.</small>
             </div>
         </div>
     `;
 }
 
-// Cart Functions
+// Функции за количката
 function addToCart(productId, fromDetails = false) {
     let qty = 1;
     if (fromDetails) {
@@ -313,12 +288,8 @@ function addToCart(productId, fromDetails = false) {
         product = window.currentProduct;
     }
 
-    if (!product && state.products.length > 0) {
-        product = state.products.find(p => p.id === productId);
-    }
-
     if (!product) {
-        alert('Error adding to cart: Product data missing');
+        alert('Грешка при добавяне в количката: липсват данни за продукта');
         return;
     }
 
@@ -338,11 +309,10 @@ function addToCart(productId, fromDetails = false) {
     saveCart();
     updateCartCount();
 
-    // Visual feedback
     const btn = event.target;
     if (btn) {
         const originalText = btn.innerText;
-        btn.innerText = 'Added!';
+        btn.innerText = 'Добавен!';
         btn.style.background = '#27ae60';
         setTimeout(() => {
             btn.innerText = originalText;
@@ -360,7 +330,7 @@ function updateCartCount() {
     if (cartCountEl) cartCountEl.innerText = count;
 }
 
-// Expose to window
+// Излагане на глобалния обхват
 window.addToCart = addToCart;
 window.initSearchPage = initSearchPage;
 window.loadProductDetails = loadProductDetails;

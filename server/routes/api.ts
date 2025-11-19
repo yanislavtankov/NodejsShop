@@ -117,7 +117,7 @@ router.post('/orders', async (req, res) => {
 
         try {
             await transporter.sendMail({
-                from: '"MiniShop" <no-reply@minishop.com>',
+                from: '"Врати" <no-reply@minishop.com>',
                 to: customer.email,
                 subject: `Order Confirmation ${code}`,
                 text: `Thank you for your order! Your order code is ${code}. Total: $${total}.`
