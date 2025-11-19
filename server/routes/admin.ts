@@ -1,6 +1,9 @@
 import express from 'express';
 import pool from '../db';
 import { Product } from '../types';
+import multer from 'multer';
+import crypto from 'crypto';
+import path from 'path';
 
 const router = express.Router();
 
@@ -22,6 +25,47 @@ const requireAuth = (req: express.Request, res: express.Response, next: express.
         res.status(401).json({ error: 'Unauthorized' });
     }
 };
+
+// Multer configuration for image uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images/');
+    },
+    filename: (req, file, cb) => {
+        // Generate random filename with original extension
+        const randomName = crypto.randomUUID();
+        const ext = path.extname(file.originalname);
+        cb(null, randomName + ext);
+    }
+});
+
+const fileFilter = (req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    // Accept only image files
+    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (extname && mimetype) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'));
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    fileFilter: fileFilter
+});
+
+// POST /api/admin/upload-image
+router.post('/upload-image', requireAuth, upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+    // Return only the filename
+    res.json({ filename: req.file.filename });
+});
 
 // POST /api/admin/login
 router.post('/login', (req, res) => {

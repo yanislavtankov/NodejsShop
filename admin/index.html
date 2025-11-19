@@ -268,8 +268,15 @@
                     <select name="category_id" id="prod-category" class="form-control" required></select>
                 </div>
                 <div class="form-group">
-                    <label>Image URL</label>
-                    <input type="text" name="image_url" id="prod-image" class="form-control">
+                    <label>Product Image</label>
+                    <input type="file" id="prod-image-file" accept="image/*" class="form-control"
+                        style="margin-bottom: 0.5rem;">
+                    <input type="hidden" name="image_url" id="prod-image">
+                    <div id="image-preview" style="margin-top: 0.5rem; display: none;">
+                        <img id="preview-img" src="" alt="Preview"
+                            style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 1px solid #ddd;">
+                    </div>
+                    <small style="color: #666;">Max size: 5MB. Formats: JPG, PNG, GIF, WebP</small>
                 </div>
                 <div class="form-group">
                     <label>

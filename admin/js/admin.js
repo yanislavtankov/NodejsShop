@@ -30,6 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
     document.getElementById('category-form').addEventListener('submit', handleCategorySubmit);
+
+    // Image upload preview
+    const imageFileInput = document.getElementById('prod-image-file');
+    if (imageFileInput) {
+        imageFileInput.addEventListener('change', handleImagePreview);
+    }
 });
 
 async function checkAuth() {
@@ -77,7 +83,7 @@ async function loadProducts() {
     tbody.innerHTML = products.map(p => `
         <tr>
             <td>${p.id}</td>
-            <td><img src="${p.image_url || ''}" style="width: 40px; height: 40px; object-fit: cover;"></td>
+            <td><img src="${p.image_url ? '/images/' + p.image_url : 'https://placehold.co/40'}" style="width: 40px; height: 40px; object-fit: cover;"></td>
             <td>${p.title}</td>
             <td>$${p.price}</td>
             <td>${p.stock}</td>
@@ -110,6 +116,16 @@ async function editProduct(id) {
         document.getElementById('prod-image').value = product.image_url;
         document.getElementById('prod-featured').checked = product.is_featured;
 
+        // Show current image if exists
+        if (product.image_url) {
+            const preview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            if (preview && previewImg) {
+                previewImg.src = '/images/' + product.image_url;
+                preview.style.display = 'block';
+            }
+        }
+
         document.getElementById('product-modal-title').innerText = 'Edit Product';
         document.getElementById('product-modal').style.display = 'flex';
     }
@@ -123,6 +139,19 @@ async function deleteProduct(id) {
 
 async function handleProductSubmit(e) {
     e.preventDefault();
+
+    // Check if there's a file to upload
+    const fileInput = document.getElementById('prod-image-file');
+    if (fileInput && fileInput.files.length > 0) {
+        try {
+            const filename = await uploadImage(fileInput.files[0]);
+            document.getElementById('prod-image').value = filename;
+        } catch (error) {
+            alert('Error uploading image: ' + error.message);
+            return;
+        }
+    }
+
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     data.is_featured = document.getElementById('prod-featured').checked;
@@ -148,7 +177,17 @@ async function handleProductSubmit(e) {
 function openProductModal() {
     document.getElementById('product-form').reset();
     document.getElementById('prod-id').value = '';
+    document.getElementById('prod-image').value = ''; // Clear hidden image field
     document.getElementById('product-modal-title').innerText = 'Add Product';
+
+    // Clear file input
+    const fileInput = document.getElementById('prod-image-file');
+    if (fileInput) fileInput.value = '';
+
+    // Hide image preview
+    const preview = document.getElementById('image-preview');
+    if (preview) preview.style.display = 'none';
+
     document.getElementById('product-modal').style.display = 'flex';
 }
 
@@ -241,4 +280,39 @@ async function updateOrderStatus(id, status) {
 
 function closeModal(id) {
     document.getElementById(id).style.display = 'none';
+}
+
+// Image Upload Functions
+async function uploadImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        body: formData
+    });
+
+    if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Upload failed');
+    }
+
+    const result = await res.json();
+    return result.filename;
+}
+
+function handleImagePreview(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const preview = document.getElementById('image-preview');
+            const previewImg = document.getElementById('preview-img');
+            if (preview && previewImg) {
+                previewImg.src = event.target.result;
+                preview.style.display = 'block';
+            }
+        };
+        reader.readAsDataURL(file);
+    }
 }

@@ -28,7 +28,7 @@ function renderCart() {
             <tr>
                 <td>
                     <div class="cart-item-info">
-                        <img src="${item.image_url || 'https://placehold.co/60x60'}" alt="${item.title}" class="cart-item-img">
+                        <img src="${item.image_url ? '/images/' + item.image_url : 'https://placehold.co/60x60'}" alt="${item.title}" class="cart-item-img">
                         <div>
                             <strong>${item.title}</strong>
                         </div>

@@ -137,7 +137,7 @@ function renderProducts(products) {
     productsContainer.innerHTML = products.map(product => `
         <div class="product-card">
             <a href="/product.html?slug=${product.slug}" class="product-image-container">
-                <img src="${product.image_url || 'https://placehold.co/400x300?text=No+Image'}" alt="${product.title}" class="product-image">
+                <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/400x300?text=No+Image'}" alt="${product.title}" class="product-image">
             </a>
             <div class="product-info">
                 <div class="product-category">${product.category_name || 'General'}</div>
@@ -280,7 +280,7 @@ function renderProductDetails(product) {
     if (!productDetailsContainer) return;
     productDetailsContainer.innerHTML = `
         <div class="product-gallery">
-            <img src="${product.image_url || 'https://placehold.co/600x400?text=No+Image'}" alt="${product.title}">
+            <img src="${product.image_url ? '/images/' + product.image_url : 'https://placehold.co/600x400?text=No+Image'}" alt="${product.title}">
         </div>
         <div class="product-meta">
             <h1>${product.title}</h1>

@@ -16,12 +16,14 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.15.3",
     "nodemailer": "^7.0.10"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.5",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.10.1",
     "@types/nodemailer": "^7.0.4",
     "ts-node": "^10.9.2",
