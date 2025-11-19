@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiniShop | Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">MiniShop.</a>
+
+                <div class="search-bar-container">
+                    <select id="header-category-select" class="search-select">
+                        <option value="">All Categories</option>
+                    </select>
+                    <input type="text" id="header-search-input" class="search-input" placeholder="Search products...">
+                    <button id="header-search-btn" class="search-btn">Search</button>
+                </div>
+
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/track.html">Track Order</a>
+                    <a href="/cart.html" class="cart-icon">
+                        🛒
+                        <span class="cart-count" id="cart-count">0</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="hero">
+        <div class="container">
+            <h1>Welcome to MiniShop</h1>
+            <p>Discover our curated collection of premium products. Quality meets affordability.</p>
+        </div>
+    </div>
+
+    <main class="container" id="products">
+        <h2 class="section-title">Featured Collection</h2>
+        <div id="products-container" class="products-grid">
+            <div class="loading">Loading curated products...</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 MiniShop Inc. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+
+</html>
