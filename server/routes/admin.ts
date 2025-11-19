@@ -4,8 +4,14 @@ import { Product } from '../types';
 
 const router = express.Router();
 
-const ADMIN_USER = 'admin';
-const ADMIN_PASS = 'changeme';
+// Load admin credentials from environment variables
+const ADMIN_USER = process.env.ADMIN_USERNAME;
+const ADMIN_PASS = process.env.ADMIN_PASSWORD;
+
+if (!ADMIN_USER || !ADMIN_PASS) {
+    console.error('ERROR: ADMIN_USERNAME and ADMIN_PASSWORD must be set in .env file');
+    process.exit(1);
+}
 
 // Auth Middleware
 const requireAuth = (req: express.Request, res: express.Response, next: express.NextFunction) => {

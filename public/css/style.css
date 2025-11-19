@@ -422,8 +422,8 @@ footer {
         padding: 1.5rem;
     }
 
-    margin-top: auto;
-    margin-bottom: 1rem;
+    /* margin-top: auto;
+    margin-bottom: 1rem; */
 }
 
 .btn {
@@ -454,6 +454,19 @@ footer {
 .btn-block {
     width: 100%;
 }
+
+.btn-danger {
+    background: #e74c3c;
+    color: white;
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+}
+
+.btn-danger:hover {
+    background: #e74c3c;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(44, 62, 80, 0.3);
+}
+
 
 /* Product Details Page */
 .product-details-container {

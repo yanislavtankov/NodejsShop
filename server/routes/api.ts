@@ -38,19 +38,18 @@ router.get('/products', async (req, res) => {
 
         if (req.query.min_price) {
             query += ' AND p.price >= ?';
-            params.push(req.query.min_price);
+            params.push(Number(req.query.min_price));
         }
 
         if (req.query.max_price) {
             query += ' AND p.price <= ?';
-            params.push(req.query.max_price);
+            params.push(Number(req.query.max_price));
         }
 
         // Pagination
         const offset = (Number(page) - 1) * Number(limit);
         query += ' LIMIT ? OFFSET ?';
         params.push(Number(limit), offset);
-
         const [rows] = await pool.query(query, params);
         res.json(rows);
     } catch (error) {

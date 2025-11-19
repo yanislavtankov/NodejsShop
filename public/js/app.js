@@ -34,6 +34,50 @@ function setupSearchListeners() {
             if (e.key === 'Enter') handleSearch();
         });
     }
+
+    // Setup header reset button
+    const headerResetBtn = document.getElementById('header-reset-btn');
+
+    // Function to toggle header reset button visibility
+    function toggleHeaderResetButton() {
+        if (headerResetBtn && headerSearchInput && headerCategorySelect) {
+            const hasSearchValue = headerSearchInput.value.trim() !== '';
+            const hasCategoryValue = headerCategorySelect.value !== '';
+            headerResetBtn.style.display = (hasSearchValue || hasCategoryValue) ? 'inline-block' : 'none';
+        }
+    }
+
+    // Add input listeners
+    if (headerSearchInput) {
+        headerSearchInput.addEventListener('input', toggleHeaderResetButton);
+    }
+    if (headerCategorySelect) {
+        headerCategorySelect.addEventListener('change', toggleHeaderResetButton);
+    }
+
+    // Handle reset button click
+    if (headerResetBtn) {
+        headerResetBtn.addEventListener('click', () => {
+            // Clear search and category
+            if (headerSearchInput) headerSearchInput.value = '';
+            if (headerCategorySelect) headerCategorySelect.value = '';
+
+            // Hide the reset button
+            headerResetBtn.style.display = 'none';
+
+            // If on search page, reload without search/category filters
+            if (window.location.pathname === '/search.html') {
+                const newParams = new URLSearchParams(window.location.search);
+                newParams.delete('q');
+                newParams.delete('category');
+
+                window.location.href = `/search.html?${newParams.toString()}`;
+            }
+        });
+    }
+
+    // Initial toggle
+    setTimeout(toggleHeaderResetButton, 100); // Delay to ensure categories are loaded
 }
 
 function handleSearch() {
@@ -113,9 +157,14 @@ async function initSearchPage() {
     const minPrice = urlParams.get('min_price') || '';
     const maxPrice = urlParams.get('max_price') || '';
 
-    // Pre-fill inputs
+    // Pre-fill search input
     if (headerSearchInput) headerSearchInput.value = q;
-    if (headerCategorySelect) headerCategorySelect.value = category; // Might need to wait for fetchCategories
+
+    // Wait for categories to load first, then set the category value
+    await fetchCategories();
+    if (headerCategorySelect && category) {
+        headerCategorySelect.value = category;
+    }
 
     const minPriceInput = document.getElementById('min-price');
     const maxPriceInput = document.getElementById('max-price');
@@ -156,6 +205,58 @@ async function initSearchPage() {
             window.location.href = `/search.html?${newParams.toString()}`;
         });
     }
+
+    // Handle Reset Price Button
+    const resetPriceBtn = document.getElementById('reset-price-btn');
+
+    // Function to toggle reset button visibility
+    function toggleResetButton() {
+        if (resetPriceBtn && minPriceInput && maxPriceInput) {
+            const hasMinValue = minPriceInput.value.trim() !== '';
+            const hasMaxValue = maxPriceInput.value.trim() !== '';
+            resetPriceBtn.style.display = (hasMinValue || hasMaxValue) ? 'inline-block' : 'none';
+        }
+    }
+
+    // Add input listeners to price fields
+    if (minPriceInput) {
+        minPriceInput.addEventListener('input', toggleResetButton);
+    }
+    if (maxPriceInput) {
+        maxPriceInput.addEventListener('input', toggleResetButton);
+    }
+
+    // Handle reset button click
+    if (resetPriceBtn) {
+        resetPriceBtn.addEventListener('click', () => {
+            // Clear price inputs
+            if (minPriceInput) minPriceInput.value = '';
+            if (maxPriceInput) maxPriceInput.value = '';
+
+            // Hide the reset button
+            resetPriceBtn.style.display = 'none';
+
+            // Remove price filters from URL and reload
+            const newParams = new URLSearchParams(window.location.search);
+            newParams.delete('min_price');
+            newParams.delete('max_price');
+
+            window.location.href = `/search.html?${newParams.toString()}`;
+        });
+    }
+
+    // Initial toggle on page load
+    toggleResetButton();
+
+    // Trigger header reset button visibility check after setting values
+    setTimeout(() => {
+        const headerResetBtn = document.getElementById('header-reset-btn');
+        if (headerResetBtn && headerSearchInput && headerCategorySelect) {
+            const hasSearchValue = headerSearchInput.value.trim() !== '';
+            const hasCategoryValue = headerCategorySelect.value !== '';
+            headerResetBtn.style.display = (hasSearchValue || hasCategoryValue) ? 'inline-block' : 'none';
+        }
+    }, 150);
 }
 
 // Load Product Details

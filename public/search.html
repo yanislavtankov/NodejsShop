@@ -21,6 +21,8 @@
                     </select>
                     <input type="text" id="header-search-input" class="search-input" placeholder="Search products...">
                     <button id="header-search-btn" class="search-btn">Search</button>
+                    <button id="header-reset-btn" class="search-btn"
+                        style="background: #e74c3c; display: none; margin-left: 10px;">x</button>
                 </div>
 
                 <div class="nav-links">
@@ -42,10 +44,12 @@
                 <form id="filter-form">
                     <div class="filter-group">
                         <label>Price Range</label>
-                        <div class="price-inputs">
+                        <div class="flex price-inputs">
                             <input type="number" id="min-price" name="min_price" placeholder="Min" min="0">
                             <span>-</span>
                             <input type="number" id="max-price" name="max_price" placeholder="Max" min="0">
+                            <button type="button" id="reset-price-btn" class="btn btn-danger btn-sm"
+                                style="display: none;">x</button>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-block btn-sm">Apply Filters</button>
