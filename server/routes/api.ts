@@ -2,6 +2,7 @@ import express from 'express';
 import pool from '../db';
 import { Product, Category, Order } from '../types';
 import nodemailer from 'nodemailer';
+import { calculateOrderTotal } from '../utils/helpers';
 
 const router = express.Router();
 
@@ -84,10 +85,7 @@ router.post('/orders', async (req, res) => {
         await connection.beginTransaction();
 
         // Calculate total
-        let total = 0;
-        for (const item of items) {
-            total += item.price * item.qty;
-        }
+        const total = calculateOrderTotal(items);
 
         const code = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 

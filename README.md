@@ -9,6 +9,7 @@ A complete, lightweight e-commerce solution built with Node.js, Express, TypeScr
 3. [API Endpoints](#api-endpoints)
 4. [Frontend](#frontend)
 5. [Technology Usage](#technology-usage)
+6. [Testing](#testing)
 
 ---
 
@@ -151,3 +152,25 @@ Vanilla JavaScript brings the static HTML pages to life.
 -   **Fetch API**: Used extensively to communicate with the backend asynchronously (AJAX). This allows the page to update content without a full reload (SPA-like feel).
 -   **LocalStorage**: Used to persist the shopping cart data in the user's browser, so items remain in the cart even after refreshing the page.
 -   **Event Handling**: Listeners for clicks, form submissions, and input changes drive the user interaction (e.g., "Add to Cart", "Search", "Filter").
+
+---
+
+## 6. Testing
+
+The project includes a comprehensive testing suite covering unit, integration, and performance testing.
+
+### Running Tests
+
+| Command | Description |
+| :--- | :--- |
+| `npm test` | Run all unit and integration tests using Jest. |
+| `npm run test:unit` | Run only unit tests. |
+| `npm run test:integration` | Run only integration tests. |
+| `npm run test:load` | Run performance/load tests using Artillery. |
+
+### Test Structure
+
+-   **Unit Tests** (`tests/unit/`): Test individual utility functions and isolated logic.
+-   **Integration Tests** (`tests/integration/`): Test API endpoints using `supertest` with mocked database connections.
+-   **Performance Tests** (`tests/performance/`): Load testing scenarios defined in `load-test.yml` to simulate user traffic.
+
